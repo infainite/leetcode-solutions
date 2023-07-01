@@ -1,16 +1,34 @@
 class Solution {
 public:
-    vector<int> dailyTemperatures(vector<int>& temperatures) {
-        vector<int> result(temperatures.size(), 0);
-        int current;
-        for (int i = temperatures.size() - 1; i >= 1; i--)
+    void solve(vector<int>& arr, int start, int end, vector<int>& res)
+    {
+        bool found = false;
+
+        if (start == end) return;
+
+        int atStart = arr.at(start);
+        
+        for (int i = start + 1; i < end + 1; i++)
         {
-            current = temperatures.at(i);
-            for (int j = i - 1; j >= 0; j--)
-                if (temperatures.at(j) < current)
-                    result.at(j) = i - j; 
+            if (arr.at(i) > atStart)
+            {
+                found = true;
+                res.at(start) = i - start;
+                solve(arr, start + 1, end, res);
+                solve(arr, end, arr.size() - 1, res);
+                break;
+            }
         }
 
-        return result;
+        if (!found)
+            solve(arr, start + 1, end, res);
+    }
+    
+    vector<int> dailyTemperatures(vector<int>& temperatures) {
+        vector<int> res(temperatures.size(), 0);
+
+        solve(temperatures, 0, temperatures.size() - 1, res);
+
+        return res;
     }
 };
